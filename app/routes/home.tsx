@@ -39,30 +39,42 @@ export default function Home() {
   useEffect(() => {
     const existingNotes = getAllNotes();
     if (existingNotes.length == 0) {
-      createNote(
-        "Welcome to Your Notes App!",
-        "Your first note - click to expand",
-        "This is a sample note to help you get started. Click on any note card to view its full content. You can create new notes, edit existing ones, and organize your thoughts!",
-      );
-
-      createNote(
-        "Meeting Notes - Team Sync",
-        "Jan 21, 2026 - Weekly standup",
-        "Discussed Q1 goals and project timeline.\n\nKey Takeaways:\n- Launch new feature by Feb 15\n- Weekly standups every Monday at 10am\n- Need to hire 2 new developers\n- Budget approved for new tools\n\nAction Items:\n- John: Update project roadmap\n- Sarah: Schedule interviews\n-Mike: Research new deployment tools",
-      );
-
-      createNote(
-        "Project Ideas",
-        "Cool projects I want to build",
-        "1. A task management app with calendar integration\n2. A weather dashboard with beautiful animations\n3. A recipe organizer with meal planning\n4. A fitness tracker with progress charts\n5. A markdown-based blog platform\n\nThese are some ideas I've been thinking about. Need to prioritize which one to start first!",
-      );
-
-      createNote(
-        "Shopping List",
-        "Things to buy this week",
-        "- Milk\n- Eggs\n- Bread\n- Coffee\n-Apples\n- Chicken\n- Rice\n- Butter\n-Yogurt\n\nDon't forget to check the pantry before going to the store!",
-      );
-      setNotes(getAllNotes());
+      const sampleNotes = [
+        {
+          id: crypto.randomUUID(),
+          title: "Welcome to the notes app",
+          description: "CLick to expand",
+          content: "This is a sample Note to help you get started",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: crypto.randomUUID(),
+          title: "Meeting Notes",
+          description: "Team sync notes",
+          content: "Discussed Q1 goals and timeline",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: crypto.randomUUID(),
+          title: "Project Ideas",
+          description: "Cool projects I want to build",
+          content: "1. Task management app\n2.Weather dashboard",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: crypto.randomUUID(),
+          title: "Shopping List",
+          description: "Things to buy this week",
+          content: `- Milk\n- Eggs\n- Bread\n-Coffee`,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+      ];
+      localStorage.setItem("notes-app-data", JSON.stringify(sampleNotes));
+      setNotes(sampleNotes);
     } else {
       setNotes(existingNotes);
     }
@@ -103,7 +115,7 @@ export default function Home() {
                   duration: 0.05,
                 },
               }}
-              className="flex absolute top-2 right-2 lg:hidden items-center justify-center bg-white rounded-full h-6 w-6"
+              className="flex absolute top-2 right-2 lg:hidden items-center justify-center bg-black text-white rounded-full h-6 w-6"
               onClick={() => setActive(null)}
             >
               <CloseIcon />
@@ -111,7 +123,7 @@ export default function Home() {
             <motion.div
               layoutId={`card-${active.title}-${id}`}
               ref={ref}
-              className="w-full max-w-[500px]  h-full md:h-fit md:max-h-[90%]  flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
+              className="w-full max-w-[500px]  h-full md:h-fit md:max-h-[90%]  flex flex-col bg-black dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
             >
               <div>
                 <div className="flex justify-between items-start p-4">
