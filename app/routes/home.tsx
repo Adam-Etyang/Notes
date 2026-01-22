@@ -4,25 +4,22 @@ import { AnimatePresence, motion } from "motion/react";
 import { useOutsideClick } from "../../hooks/use-outside-click";
 import type { Route } from "./+types/home";
 import type { Note } from "~/types/note";
-import { getAllNotes } from "~/utils/notes-storage";
+import { getAllNotes, createNote } from "~/utils/notes-storage";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "My Notes" },
-    { name: "description", content: "View and manage your notes" },
+    { title: "New React Router App" },
+    { name: "description", content: "Welcome to React Router!" },
   ];
 }
 
 export default function Home() {
-  const [notes, setNotes] = useState<Note[]>([]);
   const [active, setActive] = useState<Note | boolean | null>(null);
+
+  const [notes, setNotes] = useState<Note[]>([]);
+
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
-
-  // Load notes from localStorage on mount
-  useEffect(() => {
-    setNotes(getAllNotes());
-  }, []);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -30,18 +27,51 @@ export default function Home() {
         setActive(false);
       }
     }
-
     if (active && typeof active === "object") {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
     }
-
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [active]);
 
+  useEffect(() => {
+    const existingNotes = getAllNotes();
+    if (existingNotes.length == 0) {
+      createNote(
+        "Welcome to Your Notes App!",
+        "Your first note - click to expand",
+        "This is a sample note to help you get started. Click on any note card to view its full content. You can create new notes, edit existing ones, and organize your thoughts!",
+      );
+
+      createNote(
+        "Meeting Notes - Team Sync",
+        "Jan 21, 2026 - Weekly standup",
+        "Discussed Q1 goals and project timeline.\n\nKey Takeaways:\n- Launch new feature by Feb 15\n- Weekly standups every Monday at 10am\n- Need to hire 2 new developers\n- Budget approved for new tools\n\nAction Items:\n- John: Update project roadmap\n- Sarah: Schedule interviews\n-Mike: Research new deployment tools",
+      );
+
+      createNote(
+        "Project Ideas",
+        "Cool projects I want to build",
+        "1. A task management app with calendar integration\n2. A weather dashboard with beautiful animations\n3. A recipe organizer with meal planning\n4. A fitness tracker with progress charts\n5. A markdown-based blog platform\n\nThese are some ideas I've been thinking about. Need to prioritize which one to start first!",
+      );
+
+      createNote(
+        "Shopping List",
+        "Things to buy this week",
+        "- Milk\n- Eggs\n- Bread\n- Coffee\n-Apples\n- Chicken\n- Rice\n- Butter\n-Yogurt\n\nDon't forget to check the pantry before going to the store!",
+      );
+      setNotes(getAllNotes());
+    } else {
+      setNotes(existingNotes);
+    }
+  }, []);
+
   useOutsideClick(ref, () => setActive(null));
+
+  console.log("Notes in state:", notes);
+  console.log("Notes count:", notes.length);
 
   return (
     <>
@@ -83,28 +113,30 @@ export default function Home() {
               ref={ref}
               className="w-full max-w-[500px]  h-full md:h-fit md:max-h-[90%]  flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
             >
-              <div className="p-6">
-                <div className="mb-4">
-                  <motion.h3
-                    layoutId={`title-${active.title}-${id}`}
-                    className="text-2xl font-bold text-neutral-800 dark:text-neutral-200 mb-2"
-                  >
-                    {active.title}
-                  </motion.h3>
-                  <motion.p
-                    layoutId={`description-${active.description}-${id}`}
-                    className="text-neutral-600 dark:text-neutral-400 text-sm mb-4"
-                  >
-                    {active.description}
-                  </motion.p>
+              <div>
+                <div className="flex justify-between items-start p-4">
+                  <div className="">
+                    <motion.h3
+                      layoutId={`title-${active.title}-${id}`}
+                      className="font-medium text-neutral-700 dark:text-neutral-200 text-base"
+                    >
+                      {active.title}
+                    </motion.h3>
+                    <motion.p
+                      layoutId={`description-${active.description}-${id}`}
+                      className="text-neutral-600 dark:text-neutral-400 text-base"
+                    >
+                      {active.description}
+                    </motion.p>
+                  </div>
                 </div>
-                <div className="relative">
+                <div className="pt-4 relative px-4">
                   <motion.div
                     layout
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="text-neutral-700 dark:text-neutral-300 text-base max-h-[400px] overflow-auto whitespace-pre-wrap"
+                    className="text-neutral-600 text-xs md:text-sm lg:text-base h-40 md:h-fit pb-10 flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
                   >
                     {active.content}
                   </motion.div>
@@ -115,35 +147,26 @@ export default function Home() {
         ) : null}
       </AnimatePresence>
       <ul className="max-w-2xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 items-start gap-4">
-        {cards.map((card, index) => (
+        {notes.map((note, index) => (
           <motion.div
-            layoutId={`card-${card.title}-${id}`}
-            key={card.title}
-            onClick={() => setActive(card)}
+            layoutId={`card-${note.title}-${id}`}
+            key={note.id}
+            onClick={() => setActive(note)}
             className="p-4 flex flex-col  hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer"
           >
             <div className="flex gap-4 flex-col  w-full">
-              <motion.div layoutId={`image-${card.title}-${id}`}>
-                <img
-                  width={100}
-                  height={100}
-                  src={card.src}
-                  alt={card.title}
-                  className="h-60 w-full  rounded-lg object-cover object-top"
-                />
-              </motion.div>
               <div className="flex justify-center items-center flex-col">
                 <motion.h3
-                  layoutId={`title-${card.title}-${id}`}
+                  layoutId={`title-${note.title}-${id}`}
                   className="font-medium text-neutral-800 dark:text-neutral-200 text-center md:text-left text-base"
                 >
-                  {card.title}
+                  {note.title}
                 </motion.h3>
                 <motion.p
-                  layoutId={`description-${card.description}-${id}`}
+                  layoutId={`description-${note.description}-${id}`}
                   className="text-neutral-600 dark:text-neutral-400 text-center md:text-left text-base"
                 >
-                  {card.description}
+                  {note.description}
                 </motion.p>
               </div>
             </div>
@@ -186,96 +209,3 @@ export const CloseIcon = () => {
     </motion.svg>
   );
 };
-
-const cards = [
-  {
-    description: "Lana Del Rey",
-    title: "Summertime Sadness",
-    src: "https://assets.aceternity.com/demos/lana-del-rey.jpeg",
-    ctaText: "Visit",
-    ctaLink: "https://ui.aceternity.com/templates",
-    content: () => {
-      return (
-        <p>
-          Lana Del Rey, an iconic American singer-songwriter, is celebrated for
-          her melancholic and cinematic music style. Born Elizabeth Woolridge
-          Grant in New York City, she has captivated audiences worldwide with
-          her haunting voice and introspective lyrics. <br /> <br /> Her songs
-          often explore themes of tragic romance, glamour, and melancholia,
-          drawing inspiration from both contemporary and vintage pop culture.
-          With a career that has seen numerous critically acclaimed albums, Lana
-          Del Rey has established herself as a unique and influential figure in
-          the music industry, earning a dedicated fan base and numerous
-          accolades.
-        </p>
-      );
-    },
-  },
-  {
-    description: "Babbu Maan",
-    title: "Mitran Di Chhatri",
-    src: "https://assets.aceternity.com/demos/babbu-maan.jpeg",
-    ctaText: "Visit",
-    ctaLink: "https://ui.aceternity.com/templates",
-    content: () => {
-      return (
-        <p>
-          Babu Maan, a legendary Punjabi singer, is renowned for his soulful
-          voice and profound lyrics that resonate deeply with his audience. Born
-          in the village of Khant Maanpur in Punjab, India, he has become a
-          cultural icon in the Punjabi music industry. <br /> <br /> His songs
-          often reflect the struggles and triumphs of everyday life, capturing
-          the essence of Punjabi culture and traditions. With a career spanning
-          over two decades, Babu Maan has released numerous hit albums and
-          singles that have garnered him a massive fan following both in India
-          and abroad.
-        </p>
-      );
-    },
-  },
-
-  {
-    description: "Metallica",
-    title: "For Whom The Bell Tolls",
-    src: "https://assets.aceternity.com/demos/metallica.jpeg",
-    ctaText: "Visit",
-    ctaLink: "https://ui.aceternity.com/templates",
-    content: () => {
-      return (
-        <p>
-          Metallica, an iconic American heavy metal band, is renowned for their
-          powerful sound and intense performances that resonate deeply with
-          their audience. Formed in Los Angeles, California, they have become a
-          cultural icon in the heavy metal music industry. <br /> <br /> Their
-          songs often reflect themes of aggression, social issues, and personal
-          struggles, capturing the essence of the heavy metal genre. With a
-          career spanning over four decades, Metallica has released numerous hit
-          albums and singles that have garnered them a massive fan following
-          both in the United States and abroad.
-        </p>
-      );
-    },
-  },
-  {
-    description: "Lord Himesh",
-    title: "Aap Ka Suroor",
-    src: "https://assets.aceternity.com/demos/aap-ka-suroor.jpeg",
-    ctaText: "Visit",
-    ctaLink: "https://ui.aceternity.com/templates",
-    content: () => {
-      return (
-        <p>
-          Himesh Reshammiya, a renowned Indian music composer, singer, and
-          actor, is celebrated for his distinctive voice and innovative
-          compositions. Born in Mumbai, India, he has become a prominent figure
-          in the Bollywood music industry. <br /> <br /> His songs often feature
-          a blend of contemporary and traditional Indian music, capturing the
-          essence of modern Bollywood soundtracks. With a career spanning over
-          two decades, Himesh Reshammiya has released numerous hit albums and
-          singles that have garnered him a massive fan following both in India
-          and abroad.
-        </p>
-      );
-    },
-  },
-];
