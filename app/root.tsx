@@ -7,6 +7,7 @@ import {
   IconBook,
   IconPencil,
   IconLayoutDashboard,
+  IconNote,
 } from "@tabler/icons-react";
 import { motion } from "motion/react";
 import { cn } from "./lib/utils";
@@ -89,7 +90,7 @@ export function Sidebardemo() {
   return (
     <div
       className={cn(
-        "flex w-full flex-1 flex-col overflow-hidden rounded-md border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-800",
+        " flex w-full flex-1 flex-col overflow-hidden  border-0 bg-black md:flex-row dark:bg-neutral-800",
         "h-screen", // full screen height and width
       )}
     >
@@ -132,7 +133,7 @@ export const Logo = () => {
       href="#"
       className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black"
     >
-      <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
+      <IconNote className="h-5 w-6 shrink-0" />
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -153,6 +154,7 @@ export const LogoIcon = () => {
     </a>
   );
 };
+
 const Dashboard = () => {
   return (
     <div className="flex flex-1">
