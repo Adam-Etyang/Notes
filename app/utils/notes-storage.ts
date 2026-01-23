@@ -7,7 +7,7 @@ const NOTES_STORAGE_KEY = "notes-app-data";
  */
 export function getAllNotes(): Note[] {
   if (typeof window === "undefined") return []; // SSR safety
-  
+
   try {
     const stored = localStorage.getItem(NOTES_STORAGE_KEY);
     return stored ? JSON.parse(stored) : [];
@@ -20,9 +20,10 @@ export function getAllNotes(): Note[] {
 /**
  * Save all notes to localStorage
  */
+
 export function saveAllNotes(notes: Note[]): void {
   if (typeof window === "undefined") return; // SSR safety
-  
+
   try {
     localStorage.setItem(NOTES_STORAGE_KEY, JSON.stringify(notes));
   } catch (error) {
@@ -33,6 +34,7 @@ export function saveAllNotes(notes: Note[]): void {
 /**
  * Get a single note by ID
  */
+
 export function getNoteById(id: string): Note | undefined {
   const notes = getAllNotes();
   return notes.find((note) => note.id === id);
@@ -41,34 +43,13 @@ export function getNoteById(id: string): Note | undefined {
 /**
  * Create a new note
  */
-export function createNote(
-  title: string,
-  description: string,
-  content: string
-): Note {
-  const now = new Date().toISOString();
-  const newNote: Note = {
-    id: crypto.randomUUID(), // Generate unique ID
-    title,
-    description,
-    content,
-    createdAt: now,
-    updatedAt: now,
-  };
-
-  const notes = getAllNotes();
-  notes.push(newNote);
-  saveAllNotes(notes);
-
-  return newNote;
-}
 
 /**
  * Update an existing note
  */
 export function updateNote(
   id: string,
-  updates: Partial<Omit<Note, "id" | "createdAt">>
+  updates: Partial<Omit<Note, "id" | "createdAt">>,
 ): Note | null {
   const notes = getAllNotes();
   const index = notes.findIndex((note) => note.id === id);
@@ -88,6 +69,7 @@ export function updateNote(
 /**
  * Delete a note by ID
  */
+
 export function deleteNote(id: string): boolean {
   const notes = getAllNotes();
   const filtered = notes.filter((note) => note.id !== id);

@@ -4,7 +4,8 @@ import { AnimatePresence, motion } from "motion/react";
 import { useOutsideClick } from "../../hooks/use-outside-click";
 import type { Route } from "./+types/home";
 import type { Note } from "~/types/note";
-import { getAllNotes, createNote } from "~/utils/notes-storage";
+import { getAllNotes } from "~/utils/notes-storage";
+import { createNote } from "~/utils/createnote";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -99,7 +100,7 @@ export default function Home() {
       </AnimatePresence>
       <AnimatePresence>
         {active && typeof active === "object" ? (
-          <div className="fixed inset-0  grid place-items-center z-[100]">
+          <div className="fixed inset-0  grid place-items-center z-100">
             <motion.button
               key={`button-${active.title}-${id}`}
               layout
@@ -115,7 +116,7 @@ export default function Home() {
                   duration: 0.05,
                 },
               }}
-              className="flex absolute top-2 right-2 lg:hidden items-center justify-center bg-black text-white rounded-full h-6 w-6"
+              className="flex absolute top-2 right-2 lg:hidden items-center justify-center bg-white text-black rounded-full h-10 w-6"
               onClick={() => setActive(null)}
             >
               <CloseIcon />
@@ -123,17 +124,17 @@ export default function Home() {
             <motion.div
               layoutId={`card-${active.title}-${id}`}
               ref={ref}
-              className="w-full max-w-[500px]  h-full md:h-fit md:max-h-[90%]  flex flex-col bg-black dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
+              className="w-full max-w-[300px]  h-full md:h-fit md:max-h-[90%]  flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
             >
               <div>
                 <div className="flex justify-between items-start p-4">
                   <div className="">
-                    <motion.h3
+                    <motion.h2
                       layoutId={`title-${active.title}-${id}`}
                       className="font-medium text-neutral-700 dark:text-neutral-200 text-base"
                     >
                       {active.title}
-                    </motion.h3>
+                    </motion.h2>
                     <motion.p
                       layoutId={`description-${active.description}-${id}`}
                       className="text-neutral-600 dark:text-neutral-400 text-base"
@@ -158,13 +159,13 @@ export default function Home() {
           </div>
         ) : null}
       </AnimatePresence>
-      <ul className="max-w-2xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 items-start gap-4">
+      <ul className="max-w-2xl  w-full grid grid-cols-1 md:grid-cols-2 items-start gap-4 my-0 mx-0 bg-black p-4">
         {notes.map((note, index) => (
           <motion.div
             layoutId={`card-${note.title}-${id}`}
             key={note.id}
             onClick={() => setActive(note)}
-            className="p-4 flex flex-col  hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer"
+            className="p-4 flex flex-col  hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer bg-amber-500 h-40 overflow-hidden"
           >
             <div className="flex gap-4 flex-col  w-full">
               <div className="flex justify-center items-center flex-col">
