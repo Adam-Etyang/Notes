@@ -39,13 +39,34 @@ export default function CreateNote() {
   };
 
   return (
-    <div
-      contentEditable="true"
-      spellCheck="false"
-      className="h-full w-full border-none outline-0"
-      onInput={(e) => setContent(e.currentTarget.innerText)}
-    >
-      {content}
+    <div className="flex flex-col min-h-screen p-4">
+      <div
+        ref={editorRef}
+        contentEditable="true"
+        spellCheck="false"
+        onInput={(e) => setTitle(e.currentTarget.innerText)}
+        className="mt-0 text-2xl text-bold uppercase outline-0 border"
+      >
+        Enter title
+      </div>
+      <div
+        ref={editorRef}
+        contentEditable="true"
+        spellCheck="false"
+        onInput={(e) => setDescription(e.currentTarget.innerText)}
+        className="mt-6 text-lr text-medium outline-0 border"
+      >
+        Enter description
+      </div>
+
+      <div
+        ref={editorRef}
+        contentEditable="true"
+        spellCheck="false"
+        className="h-full w-full border-1 outline-0 mt-4 overflow-y-auto"
+        onInput={(e) => setContent(e.currentTarget.innerText)}
+      ></div>
+      <div className="mt-4 text-sm text-gray-500 pb-12">This is metadata</div>
     </div>
   );
 }
