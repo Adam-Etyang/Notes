@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { createNote } from "~/utils/createnote";
 import { useNavigate } from "react-router";
 import {
@@ -20,8 +20,32 @@ export default function CreateNote() {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const editorRef = useRef(null);
+
+  const applyFormat = (command) => {
+    document.execCommand(command);
+    editorRef.current?.focus();
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.ctrlKey && e.key === "b") {
+      e.preventDefault();
+      applyFormat("bold");
+    }
+    if (e.ctrlKey && e.key === "i") {
+      e.preventDefault();
+      applyFormat("italic");
+    }
+  };
 
   return (
-    <div className="relative w-full flex items-center justify-center bg-black"></div>
+    <div
+      contentEditable="true"
+      spellCheck="false"
+      className="h-full w-full border-none outline-0"
+      onInput={(e) => setContent(e.currentTarget.innerText)}
+    >
+      {content}
+    </div>
   );
 }
