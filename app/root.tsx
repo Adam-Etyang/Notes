@@ -59,28 +59,28 @@ export function Sidebardemo() {
   const links = [
     {
       label: "NewNote",
-      href: "#",
+      href: "/NewNote",
       icon: (
         <IconPencil className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "My Notes",
-      href: "#",
+      href: "/",
       icon: (
         <IconBook className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Settings",
-      href: "#",
+      href: "/Settings",
       icon: (
         <IconSettings className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Dashboard",
-      href: "#",
+      href: "/",
       icon: (
         <IconLayoutDashboard className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
@@ -159,7 +159,7 @@ export const LogoIcon = () => {
 const Dashboard = () => {
   return (
     <div className="flex flex-1">
-      <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-10 dark:border-neutral-700 dark:bg-neutral-900">
+      <div className="flex h-full w-full flex-1 flex-col gap-2  border-0  bg-white p-2 md:p-10 dark:border-neutral-700 dark:bg-neutral-900">
         <Outlet />
       </div>
     </div>
