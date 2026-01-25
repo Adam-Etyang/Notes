@@ -10,10 +10,6 @@ import {
 } from "../../components/ui/navbar-menu";
 import { cn } from "~/lib/utils";
 
-export async function loader() {
-  return null;
-}
-
 export default function CreateNote() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -45,7 +41,7 @@ export default function CreateNote() {
         contentEditable="true"
         spellCheck="false"
         onInput={(e) => setTitle(e.currentTarget.innerText)}
-        className="mt-0 text-2xl text-bold uppercase outline-0 border"
+        className="mt-0 text-2xl text-bold uppercase outline-0 border-none"
       >
         Enter title
       </div>
@@ -54,16 +50,17 @@ export default function CreateNote() {
         contentEditable="true"
         spellCheck="false"
         onInput={(e) => setDescription(e.currentTarget.innerText)}
-        className="mt-6 text-lr text-medium outline-0 border"
+        className="mt-6 text-lr text-medium outline-0 border-none"
       >
         Enter description
       </div>
+      <div className="h-1 bg-[#E5E5E5] mt-2 "></div>
 
       <div
         ref={editorRef}
         contentEditable="true"
         spellCheck="false"
-        className="h-full w-full border-1 outline-0 mt-4 overflow-y-auto"
+        className="h-full w-full border-none outline-0 mt-2 overflow-y-auto"
         onInput={(e) => setContent(e.currentTarget.innerText)}
       ></div>
       <div className="mt-4 text-sm text-gray-500 pb-12">This is metadata</div>
