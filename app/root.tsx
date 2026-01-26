@@ -14,15 +14,18 @@ import { cn } from "./lib/utils";
 
 import {
   isRouteErrorResponse,
+  Link,
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  useNavigate,
 } from "react-router";
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import { createNote } from "./utils/createnote";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -56,10 +59,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export function Sidebardemo() {
+  const navigate = useNavigate();
+  const handleNewNote = () => {
+    const newNote = createNote("Untitled Note", "", "");
+    navigate(`/note/${newNote.id}`);
+  };
+
   const links = [
     {
       label: "NewNote",
-      href: "/NewNote",
+      onClick: handleNewNote,
       icon: (
         <IconPencil className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
@@ -86,6 +95,21 @@ export function Sidebardemo() {
       ),
     },
   ];
+  {
+    links.map((link) =>
+      link.onClick ? (
+        <button key={link.label} onClick={link.onClick}>
+          {link.icon}
+          <span>{link.label}</span>
+        </button>
+      ) : (
+        <Link key={link.label} to={link.href}>
+          {link.icon}
+          <span>{link.label}</span>
+        </Link>
+      ),
+    );
+  }
   const [open, setOpen] = useState(false);
   return (
     <div

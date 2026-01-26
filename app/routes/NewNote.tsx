@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { createNote } from "~/utils/createnote";
+import { saveAllNotes, getAllNotes } from "~/utils/notes-storage";
 import { useNavigate } from "react-router";
 import {
   HoveredLink,
@@ -15,12 +16,40 @@ export default function CreateNote() {
   const [description, setDescription] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
+  const [noteId, setNoteId] = useState<string | null>(null);
   const navigate = useNavigate();
   const editorRef = useRef(null);
 
   const applyFormat = (command) => {
     document.execCommand(command);
     editorRef.current?.focus();
+  };
+
+  const handleSave = () => {
+    if (!title.trim()) {
+      alert("Title is required");
+      return;
+    }
+
+    if (noteId) {
+      // Update existing note
+      const notes = getAllNotes();
+      const index = notes.findIndex((note) => note.id === noteId);
+      if (index !== -1) {
+        notes[index] = {
+          ...notes[index],
+          title,
+          description,
+          content,
+          updatedAt: new Date().toISOString(),
+        };
+        saveAllNotes(notes);
+      }
+    } else {
+      // Create new note
+      const newNote = createNote(title, description, content);
+      setNoteId(newNote.id);
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -31,6 +60,10 @@ export default function CreateNote() {
     if (e.ctrlKey && e.key === "i") {
       e.preventDefault();
       applyFormat("italic");
+    }
+    if (e.ctrlKey && e.key === "s") {
+      e.preventDefault();
+      handleSave();
     }
   };
 
@@ -63,7 +96,7 @@ export default function CreateNote() {
         className="h-full w-full border-none outline-0 mt-2 overflow-y-auto"
         onInput={(e) => setContent(e.currentTarget.innerText)}
       ></div>
-      <div className="mt-4 text-sm text-gray-500 pb-12">This is metadata</div>
+      <div className="mt-4 text-sm text-gray-500 pb-12">{}</div>
     </div>
   );
 }
